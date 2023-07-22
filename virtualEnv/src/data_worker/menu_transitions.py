@@ -33,7 +33,8 @@ class Travel:
             self.start_menu(True)
 
     def menu_lib(self):
-        print(self.book_list.get_note(self.path))
+        for i in range(len(self.book_list.get_note(self.path))):
+            print(f'{i + 1}: {self.book_list.get_note(self.path)[i]}')
         commands = Commands(self.commands_list[1])
         print(commands)
         checking = Checking(self.quest_list)
@@ -70,11 +71,12 @@ class Travel:
             note = Note(note_id=1, note_title=note_title, note_body=note_body, time_of_change=current_datetime)
             self.book_list.add_note(note)
             note_info = [note.get_note()]
-            self.book_list.createFileCsv(self.path, note_info)
+            self.book_list.createFileCsv(self.path, note_info, 'a')
             commands = Commands(self.commands_list[3])
             self.update_notes(commands)
         elif answ == 2:
-            print(self.book_list.get_note(self.path))
+            for i in range(len(self.book_list.get_note(self.path))):
+                print(f'{i + 1}: {self.book_list.get_note(self.path)[i]}')
             commands = Commands(self.commands_list[3])
             self.update_notes(commands)
         elif answ == 3:
@@ -87,6 +89,9 @@ class Travel:
         while answ == False:
             answ = commands.check_command(checking.check_int(4))
         if answ == 1:
+            for i in range(1, len(self.book_list.get_note(self.path))):
+                if i != len(self.book_list.get_note(self.path)):
+                    id = i
             note_title = input("Enter title your note: ")
             note_body = input("Enter text your note: ")
             id = int(self.book_list.get_note(self.path)[-1][0]) + 1
@@ -94,43 +99,84 @@ class Travel:
             note = Note(note_id=id, note_title=note_title, note_body=note_body, time_of_change=current_datetime)
             self.book_list.add_note(note)
             note_info = [note.get_note()]
-            self.book_list.createFileCsv(self.path, note_info)
+            self.book_list.createFileCsv(self.path, note_info, 'a')
             commands = Commands(self.commands_list[3])
             self.update_notes(commands)
         elif answ == 2:
             while True:
-                choise_number = commands.check_command(checking.check_int(5))
-                if choise_number <= len(self.book_list.get_note(self.path)):
+                choise_number = commands.check_command(checking.check_int(5)) - 1
+                if choise_number <= len(self.book_list.get_note(self.path)) + 1:
                     break
             while True:
                 choise = input("Enter 't' for change title info or 'b' for change body info: ")
                 if choise == 't':
                     new_info = input("Enter new info: ")
-                    note = self.book_list.get_note(self.path)[choise_number - 1]
-                    upd_note = Note(note_id=note[0], note_title=new_info, note_body=note[2],
-                                    time_of_change=note[3])
-                    self.book_list.add_note(upd_note)
-                    note_info = [upd_note.get_note()]
-                    self.book_list.createFileCsv(self.path, note_info)
+                    notes = []
+                    for i in range(len(self.book_list.get_note(self.path))):
+                        if i != choise_number:
+                            note = self.book_list.get_note(self.path)[i]
+                            note = Note(note_id=note[0], note_title=note[1], note_body=note[2],
+                                        time_of_change=note[3])
+                            self.book_list.add_note(note)
+                            note_info = [note.get_note()]
+                            notes.append(note_info)
+                        else:
+                            note = self.book_list.get_note(self.path)[i]
+                            note = Note(note_id=note[0], note_title=new_info, note_body=note[2],
+                                        time_of_change=note[3])
+                            self.book_list.add_note(note)
+                            note_info = [note.get_note()]
+                            notes.append(note_info)
+                    self.book_list.createFileCsv(self.path, '', 'w')
+                    for i in notes:
+                        self.book_list.createFileCsv(self.path, i, 'a')
                     commands = Commands(self.commands_list[3])
                     self.update_notes(commands)
-                if choise == 'b':
+                elif choise == 'b':
                     new_info = input("Enter new info: ")
-                    note = self.book_list.get_note(self.path)[choise_number - 1]
-                    upd_note = Note(note_id=note[0], note_title=note[1], note_body=new_info,
-                                    time_of_change=note[3])
-                    self.book_list.add_note(upd_note)
-                    note_info = [upd_note.get_note()]
-                    self.book_list.createFileCsv(self.path, note_info)
+                    notes = []
+                    for i in range(len(self.book_list.get_note(self.path))):
+                        if i != choise_number:
+                            note = self.book_list.get_note(self.path)[i]
+                            note = Note(note_id=note[0], note_title=note[1], note_body=note[2],
+                                        time_of_change=note[3])
+                            self.book_list.add_note(note)
+                            note_info = [note.get_note()]
+                            notes.append(note_info)
+                        else:
+                            note = self.book_list.get_note(self.path)[i]
+                            note = Note(note_id=note[0], note_title=note[1], note_body=new_info,
+                                        time_of_change=note[3])
+                            self.book_list.add_note(note)
+                            note_info = [note.get_note()]
+                            notes.append(note_info)
+                    self.book_list.createFileCsv(self.path, '', 'w')
+                    for i in notes:
+                        self.book_list.createFileCsv(self.path, i, 'a')
                     commands = Commands(self.commands_list[3])
                     self.update_notes(commands)
         elif answ == 3:
             while True:
-                choise_number = commands.check_command(checking.check_int(5))
+                choise_number = commands.check_command(checking.check_int(5)) - 1
                 if choise_number <= len(self.book_list.get_note(self.path)):
                     break
+            notes = []
+            for i in range(len(self.book_list.get_note(self.path))):
+                if i != choise_number:
+                    note = self.book_list.get_note(self.path)[i]
+                    note = Note(note_id=i+1, note_title=note[1], note_body=note[2],
+                                    time_of_change=note[3])
+                    self.book_list.add_note(note)
+                    note_info = [note.get_note()]
+                    notes.append(note_info)
+            self.book_list.createFileCsv(self.path, '', 'w')
+            for i in notes:
+                self.book_list.createFileCsv(self.path, i, 'a')
+            commands = Commands(self.commands_list[3])
+            self.update_notes(commands)
         elif answ == 4:
-            print(self.book_list.get_note(self.path))
+            for i in range(len(self.book_list.get_note(self.path))):
+                print(f'{i + 1}: {self.book_list.get_note(self.path)[i]}')
             commands = Commands(self.commands_list[3])
             self.update_notes(commands)
         elif answ == 5:
