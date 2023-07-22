@@ -1,4 +1,4 @@
-import os, csv
+import csv
 from .noteClass import Note
 
 class NotesBook:
@@ -32,8 +32,8 @@ class NotesBook:
                           f"Body: {note.body}\n"
         return result_str
 
-    def createFileCsv(self, path, note_info):
+    def createFileCsv(self, path, note_info, flag):
         a = ['Id', 'Title', 'Body', 'Time']
-        with open(path, 'a', newline='') as state_file:
+        with open(path, f'{flag}', newline='') as state_file:
             writer = csv.DictWriter(state_file, a, delimiter=';')
             writer.writerows(note_info)
