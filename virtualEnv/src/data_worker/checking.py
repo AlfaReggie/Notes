@@ -14,8 +14,8 @@ class Checking:
     def check_int(self, numbStrVal: int):
         checkNum = input(f"\nEnter {self.val[numbStrVal]}: ")
         if checkNum.replace("-", '').isdigit():
-            if int(checkNum) < 0:
-                print("Error! Can't negative!")
+            if int(checkNum) <= 0:
+                print("Error! Bad choise!")
                 return Checking.check_int(self, numbStrVal)
             return int(checkNum)
         else:
